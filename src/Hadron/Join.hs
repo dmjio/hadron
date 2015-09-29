@@ -32,7 +32,6 @@ import           Data.Default
 import           Data.Hashable
 import qualified Data.HashMap.Strict   as HM
 import           Data.List
-import           Data.Monoid
 import           Data.Ord
 import           Data.Serialize
 import           Data.String
@@ -40,8 +39,7 @@ import qualified Data.Vector           as V
 import           GHC.Generics
 -------------------------------------------------------------------------------
 import           Hadron.Basic
--------------------------------------------------------------------------------
-
+------------------------------------------------------------------------------
 
 type DataDefs = [(DataSet, JoinType)]
 

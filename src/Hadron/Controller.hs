@@ -155,7 +155,6 @@ import           Network.HostName
 import           System.Environment
 import           System.FilePath.Lens
 import           System.IO
-import           System.Locale
 import           Text.Parsec
 -------------------------------------------------------------------------------
 import           Hadron.Basic                 hiding (mapReduce)
@@ -527,14 +526,12 @@ newtype AppLabel = AppLabel { unAppLabel :: T.Text }
 -------------------------------------------------------------------------------
 mkAppLabel :: T.Text -> AppLabel
 mkAppLabel txt
-  | all chk (toS txt) = AppLabel txt
+  | all chk ((toS txt) :: String) = AppLabel txt
   | otherwise = error "Application labels can only be lowercase alphanumeric characters"
   where
     chk c = all ($ c) [isLower, isAlphaNum, not . isSpace]
 
 instance IsString AppLabel where fromString = mkAppLabel . toS
-
-
 
 data ContState = ContState {
       _csApp          :: AppLabel
@@ -618,22 +615,17 @@ data ConI a where
         -> (FilePath -> Bool)
         -> ConI (Tap (FilePath, B.ByteString))
 
-    ConIO :: IO a -> ConI a
-    -- ^ General IO action; both orchestrator and nodes perform the action
+    ConIO :: IO a -> ConI a  -- General IO action; both orchestrator and nodes perform the action
 
-    OrchIO :: IO a -> ConI ()
-    -- ^ Only the orchestrator performs action
+    OrchIO :: IO a -> ConI () -- Only the orchestrator performs action
 
-    NodeIO :: IO a -> ConI a
-    -- ^ Only the nodes perform action
+    NodeIO :: IO a -> ConI a  -- Only the nodes perform action
 
     SetVal :: String -> B.ByteString -> ConI ()
 
     GetVal :: String -> ConI (Maybe B.ByteString)
 
-    RunOnce :: Serialize a => IO a -> ConI a
-    -- ^ Only run on orchestrator, then make available to all the
-    -- nodes via HDFS.
+    RunOnce :: Serialize a => IO a -> ConI a  -- Only run on orchestrator, then make available to all the nodes via HDFS.
 
 
 -- | All MapReduce steps are integrated in the 'Controller' monad.
@@ -795,14 +787,14 @@ orchestrate (Controller p) settings rr s = do
       (liftIO $ openFile "hadron.log" AppendMode)
       (liftIO . hClose)
       (\ h -> do echoInfo ()  "Initiating orchestration..."
-                 evalStateT (runEitherT (go p)) s)
+                 evalStateT (runExceptT (go p)) s)
     where
       go = eval . O.view
 
       eval (Return a) = return a
       eval (i :>>= f) = eval' i >>= go . f
 
-      eval' :: (MonadIO m) => ConI a -> EitherT String (StateT ContState m) a
+      eval' :: (MonadIO m) => ConI a -> ExceptT String (StateT ContState m) a
 
       eval' (ConIO f) = liftIO f
 

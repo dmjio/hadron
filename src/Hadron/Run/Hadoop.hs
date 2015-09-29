@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE RankNTypes            #-}
@@ -55,7 +56,7 @@ module Hadron.Run.Hadoop
     ) where
 
 -------------------------------------------------------------------------------
-import           Control.Applicative
+
 import           Control.Error
 import           Control.Lens
 import           Control.Monad
@@ -70,6 +71,7 @@ import           Data.Conduit.Binary          (sourceHandle)
 import           Data.Default
 import           Data.List
 import           Data.List.LCS.HuntSzymanski
+
 import           Data.Monoid
 import           Data.String.Conv
 import qualified Data.Text                    as T
@@ -220,7 +222,7 @@ hadoopMapReduce
     -> MapReduceKey
     -> RunToken
     -> HadoopRunOpts
-    -> EitherT String m ()
+    -> ExceptT String m ()
 hadoopMapReduce HadoopEnv{..} mrKey runToken HadoopRunOpts{..} = do
     exec <- scriptIO getExecutablePath
     prog <- scriptIO getProgName

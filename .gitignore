@@ -1,6 +1,7 @@
 dist
 TAGS
 *.hi
+*.nix
 *.o
 *DS*
 *.csv*
