@@ -199,16 +199,16 @@ type FanOutSink =
   -> Consumer a m Int
 
 -------------------------------------------------------------------------------
-test :: IO ()
-test = do
-    fo <- mkFanOut
-      (\ fp -> (,) <$> openFile fp AppendMode <*> pure (return ()))
-    fanWrite fo "test1" "foo"
-    fanWrite fo "test1" "bar"
-    fanWrite fo "test1" "tak"
-    print =<< fanStats fo
-    fanCloseAll fo
-    fanWrite fo "test1" "tak"
+-- test :: IO ()
+-- test = do
+--     fo <- mkFanOut
+--       (\ fp -> (,) <$> openFile fp AppendMode <*> pure (return ()))
+--     fanWrite fo "test1" "foo"
+--     fanWrite fo "test1" "bar"
+--     fanWrite fo "test1" "tak"
+--     print =<< fanStats fo
+--     fanCloseAll fo
+--     fanWrite fo "test1" "tak"
 
 
 
