@@ -2,6 +2,7 @@ dist
 TAGS
 *.hi
 *.o
+*.nix
 *DS*
 *.csv*
 *.swp

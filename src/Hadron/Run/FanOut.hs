@@ -25,11 +25,14 @@ module Hadron.Run.FanOut
     , fanWrite
     , fanClose
     , fanCloseAll
-
+    , fhPath
     , FanOutSink
     , sinkFanOut
     , sequentialSinkFanout
     , fanStats
+    -- * Additional lenses
+    , chunkOrig
+    , chunkTarget
     ) where
 
 -------------------------------------------------------------------------------
@@ -188,8 +191,12 @@ sequentialSinkFanout dispatch conv fo =
 
 
 
-type FanOutSink = MonadIO m => (a -> FilePath) -> (a -> m B.ByteString) -> FanOut -> Consumer a m Int
-
+type FanOutSink =
+     forall m a . MonadIO m
+  => (a -> FilePath)
+  -> (a -> m B.ByteString)
+  -> FanOut
+  -> Consumer a m Int
 
 -------------------------------------------------------------------------------
 test :: IO ()

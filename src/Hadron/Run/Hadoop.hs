@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE RankNTypes            #-}
@@ -32,7 +33,7 @@ module Hadron.Run.Hadoop
     , mrSettings
     , mrsInput, mrsOutput, mrsPart, mrsNumMap, mrsNumReduce
     , mrsCombine, mrsCompress, mrsOutSep, mrsJobName, mrsComparator
-
+    , mrsTaskTimeout
     , Codec
     , gzipCodec
     , snappyCodec
@@ -220,7 +221,7 @@ hadoopMapReduce
     -> MapReduceKey
     -> RunToken
     -> HadoopRunOpts
-    -> EitherT String m ()
+    -> ExceptT String m ()
 hadoopMapReduce HadoopEnv{..} mrKey runToken HadoopRunOpts{..} = do
     exec <- scriptIO getExecutablePath
     prog <- scriptIO getProgName
